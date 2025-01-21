@@ -11,8 +11,8 @@ exports.loginAdmin = (req, res) => {
       username === process.env.ADMIN_USERNAME &&
       password === process.env.ADMIN_PASSWORD
     ) {
-      const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.cookie('token', token, { httpOnly: true }); // Set JWT as an HTTP-only cookie
+        const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '15m' });
+        res.cookie('token', token, { httpOnly: true }); // Set JWT as an HTTP-only cookie
       return res.status(200).json({ message: 'Login successful', token });
     }
   
