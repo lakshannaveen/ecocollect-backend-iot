@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 require('dotenv').config(); // Load .env variables
 const accountRoutes = require('./routes/accountRoutes');
 const cookieParser = require('cookie-parser');
+const binRoutes = require('./routes/binRoutes');
 
 const app = express(); // Initialize app
 const PORT = process.env.PORT || 5002;
@@ -22,6 +23,8 @@ app.use(express.json());
 
 // Routes
 app.use('/api/account', accountRoutes);
+
+app.use('/api/bins', binRoutes);
 
 // Database connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
