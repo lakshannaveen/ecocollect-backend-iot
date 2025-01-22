@@ -27,5 +27,28 @@ const updateBinStatus = async (req, res) => {
     res.status(500).json({ message: 'Error updating bin status', error });
   }
 };
+// Backend logic (binController.js)
 
-module.exports = { getAllBins, updateBinStatus };
+const updateBinerror = async (req, res) => {
+    const { id } = req.params;
+    const { collected } = req.body;
+  
+    try {
+      const bin = await Bin.findByIdAndUpdate(
+        id,
+        { isCollected: collected },
+        { new: true }
+      );
+      if (!bin) return res.status(404).json({ message: 'Bin not found' });
+  
+      // If the bin is no longer collected, reset the warning message and icon
+      bin.isBinFull = bin.fullnessPercentage > 90 && !collected;
+  
+      res.status(200).json(bin); // Send updated bin data
+    } catch (error) {
+      res.status(500).json({ message: 'Error updating bin status', error });
+    }
+  };
+  
+
+module.exports = { getAllBins, updateBinStatus ,updateBinerror};
