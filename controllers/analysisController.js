@@ -1,48 +1,37 @@
-const Bin = require("../models/Binmodel"); // Adjust path if necessary
+const Bin = require("../models/Binmodel"); // Ensure correct model path
 
-// Get weekly average temperature and weight
-exports.getWeeklyAverages = async (req, res) => {
+// Get daily average temperature and weight
+exports.getDailyAverages = async (req, res) => {
   try {
     const data = await Bin.aggregate([
       {
         $project: {
-          dayOfWeek: { $dayOfWeek: "$createdAt" }, // 1 = Sunday, ..., 7 = Saturday
+          date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, // Extract only the date (without time)
           temperature: 1,
           weight: 1,
         },
       },
       {
         $group: {
-          _id: "$dayOfWeek",
+          _id: "$date", // Group by date
           avgTemperature: { $avg: "$temperature" },
           avgWeight: { $avg: "$weight" },
         },
       },
       {
-        $sort: { _id: 1 }, // Sort by day of the week
+        $sort: { _id: 1 }, // Sort by date
       },
     ]);
 
-    // Convert numeric day to readable names
-    const dayMapping = {
-      1: "Sunday",
-      2: "Monday",
-      3: "Tuesday",
-      4: "Wednesday",
-      5: "Thursday",
-      6: "Friday",
-      7: "Saturday",
-    };
-
     const formattedData = data.map((item) => ({
-      day: dayMapping[item._id],
-      avgTemperature: item.avgTemperature.toFixed(2),
-      avgWeight: item.avgWeight.toFixed(2),
+      day: item._id, // The date
+      avgTemperature: Number(item.avgTemperature.toFixed(2)),
+      avgWeight: Number(item.avgWeight.toFixed(2)),
     }));
 
     res.json(formattedData);
   } catch (error) {
-    console.error("Error fetching weekly averages:", error);
+    console.error("Error fetching daily averages:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

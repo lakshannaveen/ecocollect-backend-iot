@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { getWeeklyAverages } = require("../controllers/analysisController");
+const { getDailyAverages } = require("../controllers/analysisController"); // Ensure correct import
 
-// Define route to fetch weekly averages
-router.get("/weekly-averages", getWeeklyAverages);
+// Define route
+router.get("/daily", getDailyAverages);
 
 module.exports = router;
