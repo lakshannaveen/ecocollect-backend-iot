@@ -6,7 +6,7 @@ const accountRoutes = require('./routes/accountRoutes');
 const cookieParser = require('cookie-parser');
 const binRoutes = require('./routes/binRoutes');
 const mapRoutes = require('./routes/mapRoutes');
-
+const analysisRoutes = require("./routes/analysisRoute");
 const app = express(); // Initialize app
 const PORT = process.env.PORT || 5002;
 
@@ -29,6 +29,9 @@ app.use('/api/bins', binRoutes);
 
 // Use mapRoutes
 app.use('/api/map', mapRoutes);
+
+// anysis Routes
+app.use("/api/analysis", analysisRoutes);
 
 // Database connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
