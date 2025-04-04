@@ -1,32 +1,34 @@
-const Bin = require("../models/Binmodel"); // Ensure correct model path
+const Bin = require("../models/Binmodel");
 
-// Get daily average temperature and weight per bin
+// Get daily average temperature, humidity and weight per bin
 exports.getDailyAverages = async (req, res) => {
   try {
     const data = await Bin.aggregate([
       {
         $project: {
-          binId: 1, // Include binId in the projection
+          binId: 1,
           temperature: 1,
+          humidity: 1, // Added humidity
           weight: 1,
         },
       },
       {
         $group: {
-          _id: "$binId", // Group by binId only
+          _id: "$binId",
           avgTemperature: { $avg: "$temperature" },
+          avgHumidity: { $avg: "$humidity" }, // Added humidity average
           avgWeight: { $avg: "$weight" },
         },
       },
       {
-        $sort: { "_id": 1 }, // Sort by binId
+        $sort: { "_id": 1 },
       },
     ]);
 
-    // Format the response to include binId and averages
     const formattedData = data.map((item) => ({
       binId: item._id,
       avgTemperature: Number(item.avgTemperature.toFixed(2)),
+      avgHumidity: Number(item.avgHumidity.toFixed(2)), // Added humidity
       avgWeight: Number(item.avgWeight.toFixed(2)),
     }));
 
@@ -37,7 +39,7 @@ exports.getDailyAverages = async (req, res) => {
   }
 };
 
-// Get weekly average temperature and weight per bin
+// Get weekly average temperature, humidity and weight per bin
 exports.getWeeklyAverages = async (req, res) => {
   try {
     const data = await Bin.aggregate([
@@ -45,27 +47,29 @@ exports.getWeeklyAverages = async (req, res) => {
         $project: {
           binId: 1,
           temperature: 1,
+          humidity: 1, // Added humidity
           weight: 1,
-          week: { $isoWeek: "$date" },  // Use $isoWeek to extract the week number (from the date field)
+          week: { $isoWeek: "$date" },
         },
       },
       {
         $group: {
-          _id: { binId: "$binId", week: "$week" }, // Group by binId and week
+          _id: { binId: "$binId", week: "$week" },
           avgTemperature: { $avg: "$temperature" },
+          avgHumidity: { $avg: "$humidity" }, // Added humidity average
           avgWeight: { $avg: "$weight" },
         },
       },
       {
-        $sort: { "_id.binId": 1, "_id.week": 1 }, // Sort by binId and week
+        $sort: { "_id.binId": 1, "_id.week": 1 },
       },
     ]);
 
-    // Format the response to include binId, week, and averages
     const formattedData = data.map((item) => ({
       binId: item._id.binId,
       week: item._id.week,
       avgTemperature: Number(item.avgTemperature.toFixed(2)),
+      avgHumidity: Number(item.avgHumidity.toFixed(2)), // Added humidity
       avgWeight: Number(item.avgWeight.toFixed(2)),
     }));
 

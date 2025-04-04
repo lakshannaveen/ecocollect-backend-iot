@@ -10,6 +10,7 @@ const BinSchema = new mongoose.Schema({
   isBinFull: { type: Boolean, default: false },
   isCollected: { type: Boolean, default: false },
   temperature: { type: Number, required: true },
+  humidity: { type: Number, required: true }, // Added humidity field
   weight: { type: Number, required: true },
 }, { timestamps: true });
 
