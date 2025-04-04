@@ -50,54 +50,5 @@ const updateBinerror = async (req, res) => {
     }
   };
   
-// Add this new function to your existing binController.js
-const createOrUpdateBinData = async (req, res) => {
-  try {
-    const { 
-      binId,
-      binLocation,
-      fullnessPercentage,
-      temperature,
-      humidity,
-      weight
-    } = req.body;
 
-    // Auto-calculate isBinFull based on fullnessPercentage
-    const isBinFull = fullnessPercentage > 90;
-
-    // Find and update or create new bin
-    const bin = await Bin.findOneAndUpdate(
-      { binId }, // Find by binId
-      {
-        binLocation,
-        fullnessPercentage,
-        isBinFull,
-        isCollected: false, // Default to false when updating from sensor
-        temperature,
-        humidity,
-        weight,
-        lastUpdated: new Date() // Track when data was received
-      },
-      { 
-        upsert: true, // Create if doesn't exist
-        new: true, // Return the updated document
-        setDefaultsOnInsert: true 
-      }
-    );
-
-    res.status(200).json(bin);
-  } catch (error) {
-    res.status(500).json({ 
-      message: 'Error processing bin data', 
-      error: error.message 
-    });
-  }
-};
-
-// Update your exports to include the new function
-module.exports = { 
-  getAllBins, 
-  updateBinStatus, 
-  updateBinerror,
-  createOrUpdateBinData // Add this
-};
+module.exports = { getAllBins, updateBinStatus ,updateBinerror};
