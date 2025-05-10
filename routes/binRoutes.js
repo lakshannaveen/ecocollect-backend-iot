@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAllBins, updateBinStatus,createOrUpdateBinData } = require('../controllers/binController');
+const { getAllBins, updateBinStatus,createOrUpdateBinData,deleteBin } = require('../controllers/binController');
 
 const router = express.Router();
 
@@ -10,5 +10,6 @@ router.get('/', getAllBins);
 router.put('/:id', updateBinStatus);
 // New route for sensor data
 router.post('/sensor-data', createOrUpdateBinData);
-
+// Route to delete a bin
+router.delete('/:id', deleteBin);
 module.exports = router;

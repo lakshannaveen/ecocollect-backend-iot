@@ -93,11 +93,26 @@ const createOrUpdateBinData = async (req, res) => {
     });
   }
 };
+// Delete a bin
+const deleteBin = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedBin = await Bin.findByIdAndDelete(id);
+    if (!deletedBin) {
+      return res.status(404).json({ message: 'Bin not found' });
+    }
+    res.status(200).json({ message: 'Bin deleted successfully', deletedBin });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting bin', error });
+  }
+};
 
 // Update your exports to include the new function
 module.exports = { 
   getAllBins, 
   updateBinStatus, 
   updateBinerror,
-  createOrUpdateBinData // Add this
+  createOrUpdateBinData,
+  deleteBin
 };
